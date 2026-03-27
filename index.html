@@ -102,6 +102,14 @@
       display: none;
     }
 
+    #retry-btn {
+      background: #146082;
+      color: #ffffff;
+      width: 100%;
+      margin-top: 10px;
+      display: none;
+    }
+
     #feedback {
       margin-top: 16px;
       padding: 14px;
@@ -123,6 +131,28 @@
       border: 1px solid #f87171;
     }
 
+    #tip-box {
+      margin-top: 12px;
+      padding: 12px 16px;
+      border-radius: 8px;
+      background: #3a2a00;
+      border: 1px solid #caa130;
+      color: #f0d080;
+      font-size: 0.92rem;
+      line-height: 1.5;
+      text-align: left;
+      display: none;
+    }
+
+    #tip-box strong {
+      display: block;
+      margin-bottom: 4px;
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: #caa130;
+    }
+
   </style>
 </head>
 <body>
@@ -139,20 +169,80 @@
 
     <button class="btn" id="start-btn" onclick="startQuiz()">Start</button>
     <button class="btn" id="submit-btn" onclick="checkAnswer()">Submit</button>
+    <button class="btn" id="retry-btn" onclick="retryQuestion()">Try Again</button>
     <button class="btn" id="next-btn" onclick="nextQuestion()">Next Question</button>
 
     <div id="feedback"></div>
+    <div id="tip-box">
+      <strong>💡 Hint</strong>
+      <span id="tip-text"></span>
+      <img id="tip-qr" src="" alt="QR code" style="display:none; margin-top:10px; width:110px; height:110px; border-radius:6px;">
+    </div>
   </div>
 
   <script>
     const questions = [
-      { question: "TzKT explorer allows users to explore Tezos governance process. You can observe how many epochs have changed, every upgrade proposal created and current proposal voting status. Question: How many stages has Tezos governance procedure?", answer: "5" },
-      { question: "TzKT explorer can display the balance in equivalent. E.g you can see how much the account has converted to USD of BTC. Selected currency is displayed for XTZ balance and for any DeFi token balances.\nQuestion: How many currency pairs are there?", answer: "7" },
-      { question: "TzKT explorer have the Stats section. There you can explore many essential Tezos values displayed in graphs and charts, which allows to visualise the dynamics. Question: State the highest recorded Staking APY", answer: "10.62" },
-      { question: "TzKT allows you to review bakery software. You can assess how many bakers use each version of the software and find the links to the software update. Question: State the current software version", answer: "24.2" },
-      { question: "TzKT Bakers page provides a variety of tools to choose the baker to stake or delegate. You can see what services the baker offers and sort them according to your criteria.\nQuestion: Find the baker which has the most free staking space.", answer: "Everstake" },
-      { question: "TzKT has tools to explore your delegation and staking process. Every account has a rewards tab with detailed numbers and graphs. Every baker, in addition, has a schedule showing each block and attestation.\nQuestion: Find the rewards tab and state how many statistics points there are.", answer: "8" },
-      { question: "TzKT has a specific section where you can explore Tezos dApps and get detailed information, including numbers, graphs, social links and all contracts and tokens related to the project. Question: Find the Sirius dApp and find out the name of the token it is using.", answer: "SIRS" },
+      {
+        question: "TzKT explorer allows users to explore Tezos governance process. You can observe how many epochs have changed, every upgrade proposal created and current proposal voting status. Question: How many stages has Tezos governance procedure?",
+        answer: "5",
+        tip: "Navigate to the Governance section on TzKT and look at the voting period cycle diagram."
+      },
+      {
+        question: "TzKT explorer have the Stats section. There you can explore many essential Tezos values displayed in graphs and charts, which allows to visualise the dynamics. Question: State the highest recorded Staking APY",
+        answer: "17.52",
+        tip: "Go to the Stats section and hover over the peak of the Staking APY graph to read the exact value."
+      },
+      {
+        question: "TzKT allows you to review bakery software. You can assess how many bakers use each version of the software and find the links to the software update. Question: State the current software version",
+        answer: ["24.2", "v24.2"],
+        tip: "Visit the Bakers section, find the Bakery Software tab, and look for the most recent version listed."
+      },
+      {
+        question: "TzKT Bakers page provides a variety of tools to choose the baker to stake or delegate. You can see what services the baker offers and sort them according to your criteria.\nQuestion: Find the baker which has the most free staking space.",
+        answer: "TenX Protocols",
+        tip: "On the Bakers page, use the column sort to order bakers by Free Staking Space (descending)."
+      },
+      {
+        question: "TzKT has a specific section where you can explore Tezos dApps and get detailed information, including numbers, graphs, social links and all contracts and tokens related to the project. Question: Find the Sirius dApp and find out the symbol of the token it is using.",
+        answer: "SIRS",
+        tip: "Go to the dApps section, search for Sirius, and check the token listed under its details."
+      },
+      {
+        question: "Double baking event is designed to prevent the ecosystem from the baker mistakes or fraud, encouraging with a reward in case of accusing the issue.\nQuestion: What is the biggest reward for double baking accusation?",
+        answer: "64003",
+        tip: "Search for double baking events on TzKT and sort by reward to find the highest accusation reward."
+      },
+      {
+        question: "What city was the first Tezos protocol upgrade named after? Tip: It was the first protocol upgrade, which was adopted based on a community vote.",
+        answer: "Athens",
+        tip: "Go to the Protocols section on TzKT and find the first community-voted upgrade."
+      },
+      {
+        question: "Now one Tezos block is generated every 6 seconds.\nQuestion: How many seconds did it take initially? Tip: The first protocol is Alpha I",
+        answer: "60",
+        tip: "Navigate to the Protocols section on TzKT and open Alpha I to check its block time parameter."
+      },
+      {
+        question: "The TzKT API serves 2 billion requests per month.\nQuestion: How many requests per day can be provided for free?",
+        answer: "500000",
+        tip: "Check the TzKT API pricing or documentation page for the free tier limits."
+      },
+      {
+        question: "Question: When was Etherlink originated? Enter dd-mm-yyyy",
+        answer: "29-04-2024",
+        tip: "Open Blockchain → Smart Rollup Operations → Originate."
+      },
+      {
+        question: "Question: What is the biggest amount not yet activated from ICO?",
+        answer: "2500000",
+        tip: "Open Commitments in the Blockchain tab and switch to 'Pending'."
+      },
+      {
+        question: "Question: State the date of the genesis block in Tezos. Enter dd-mm-yyyy",
+        answer: "30-06-2018",
+        tip: "Search for block #1 on TzKT and check its timestamp.",
+        tipQR: "https://tzkt.io/0/info"
+      },
     ];
 
     let current = null;
@@ -177,7 +267,13 @@
 
     function showQuestion() {
       current = getRandom();
-      document.getElementById('question-box').textContent = current.question;
+      const box = document.getElementById('question-box');
+      const parts = current.question.split(/(?=Question:)/i);
+      if (parts.length === 2) {
+        box.innerHTML = `<div><span style="opacity:0.85">${parts[0].trim()}</span><br><br><strong>${parts[1].trim()}</strong></div>`;
+      } else {
+        box.textContent = current.question;
+      }
       const input = document.getElementById('answer-input');
       input.style.display = 'block';
       input.value = '';
@@ -187,6 +283,10 @@
       const fb = document.getElementById('feedback');
       fb.style.display = 'none';
       fb.className = '';
+      document.getElementById('tip-box').style.display = 'none';
+      document.getElementById('tip-text').textContent = '';
+      document.getElementById('tip-qr').style.display = 'none';
+      document.getElementById('tip-qr').src = '';
     }
 
     function checkAnswer() {
@@ -194,25 +294,56 @@
       const userAnswer = input.value.trim().toLowerCase();
       if (!userAnswer) return;
 
-      const correct = current.answer.toLowerCase();
+      const answers = Array.isArray(current.answer) ? current.answer : [current.answer];
+      const correct = answers.map(a => a.toLowerCase());
       const fb = document.getElementById('feedback');
 
-      if (userAnswer === correct) {
+      if (correct.includes(userAnswer)) {
         fb.textContent = '✓ Correct!';
         fb.className = 'correct';
+        document.getElementById('next-btn').style.display = 'block';
+        document.getElementById('retry-btn').style.display = 'none';
       } else {
-        fb.textContent = `✗ Wrong. The answer is: ${current.answer}`;
+        fb.textContent = '✗ Wrong. Try again!';
         fb.className = 'wrong';
+        document.getElementById('next-btn').style.display = 'block';
+        document.getElementById('retry-btn').style.display = 'block';
+        if (current.tip) {
+          document.getElementById('tip-text').textContent = current.tip;
+          const qrImg = document.getElementById('tip-qr');
+          if (current.tipQR) {
+            qrImg.src = `https://api.qrserver.com/v1/create-qr-code/?size=110x110&data=${encodeURIComponent(current.tipQR)}`;
+            qrImg.style.display = 'block';
+          } else {
+            qrImg.style.display = 'none';
+          }
+          document.getElementById('tip-box').style.display = 'block';
+        }
       }
 
       fb.style.display = 'block';
       document.getElementById('submit-btn').style.display = 'none';
-      document.getElementById('next-btn').style.display = 'block';
       input.disabled = true;
+    }
+
+    function retryQuestion() {
+      const input = document.getElementById('answer-input');
+      input.disabled = false;
+      input.value = '';
+      input.focus();
+      document.getElementById('retry-btn').style.display = 'none';
+      document.getElementById('submit-btn').style.display = 'block';
+      const fb = document.getElementById('feedback');
+      fb.style.display = 'none';
+      fb.className = '';
+      document.getElementById('tip-box').style.display = 'none';
+      document.getElementById('tip-qr').style.display = 'none';
+      document.getElementById('tip-qr').src = '';
     }
 
     function nextQuestion() {
       document.getElementById('answer-input').disabled = false;
+      document.getElementById('retry-btn').style.display = 'none';
       showQuestion();
     }
 
