@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quiz App</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #ffffff;
+      color: #ffffff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    .card {
+      background: #005377;
+      border-radius: 16px;
+      padding: 40px;
+      width: 500px;
+      max-width: 95vw;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+      text-align: center;
+    }
+
+    h1 {
+      font-size: 1.8rem;
+      margin-bottom: 8px;
+      color: #caa130;
+    }
+
+    .subtitle {
+      color: #ffffff;
+      margin-bottom: 32px;
+      font-size: 0.9rem;
+      opacity: 0.7;
+    }
+
+    #question-box {
+      background: #146082;
+      border-radius: 12px;
+      padding: 24px;
+      font-size: 1.1rem;
+      line-height: 1.5;
+      min-height: 80px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 24px;
+      color: #ffffff;
+    }
+
+    #answer-input {
+      width: 100%;
+      padding: 12px 16px;
+      border-radius: 8px;
+      border: 2px solid #146082;
+      background: #005377;
+      color: #ffffff;
+      font-size: 1rem;
+      outline: none;
+      transition: border-color 0.2s;
+      margin-bottom: 16px;
+    }
+
+    #answer-input:focus { border-color: #caa130; }
+
+    .btn {
+      padding: 12px 32px;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: transform 0.1s, opacity 0.2s;
+      font-weight: 600;
+    }
+
+    .btn:active { transform: scale(0.97); }
+
+    #start-btn {
+      background: #caa130;
+      color: #ffffff;
+      width: 100%;
+    }
+
+    #submit-btn {
+      background: #146082;
+      color: #ffffff;
+      width: 100%;
+      display: none;
+    }
+
+    #next-btn {
+      background: #caa130;
+      color: #ffffff;
+      width: 100%;
+      margin-top: 10px;
+      display: none;
+    }
+
+    #feedback {
+      margin-top: 16px;
+      padding: 14px;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 1rem;
+      display: none;
+    }
+
+    .correct {
+      background: #1a4731;
+      color: #ffffff;
+      border: 1px solid #4ade80;
+    }
+
+    .wrong {
+      background: #4b1c1c;
+      color: #ffffff;
+      border: 1px solid #f87171;
+    }
+
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div style="display:flex; align-items:center; justify-content:center; gap:12px; margin-bottom:8px;">
+      <img src="tzkt_logo_full.png" alt="TzKT logo" style="height:52px; width:auto;">
+      <h1 style="margin-bottom:0;">TzKweez</h1>
+    </div>
+    <p class="subtitle">TzKT Tezos Explorer</p>
+
+    <div id="question-box">Press "Start" to begin</div>
+
+    <input type="text" id="answer-input" placeholder="Type your answer here..." style="display:none" autocomplete="off">
+
+    <button class="btn" id="start-btn" onclick="startQuiz()">Start</button>
+    <button class="btn" id="submit-btn" onclick="checkAnswer()">Submit</button>
+    <button class="btn" id="next-btn" onclick="nextQuestion()">Next Question</button>
+
+    <div id="feedback"></div>
+  </div>
+
+  <script>
+    const questions = [
+      { question: "TzKT explorer allows users to explore Tezos governance process. You can observe how many epochs have changed, every upgrade proposal created and current proposal voting status. Question: How many stages has Tezos governance procedure?", answer: "5" },
+      { question: "TzKT explorer can display the balance in equivalent. E.g you can see how much the account has converted to USD of BTC. Selected currency is displayed for XTZ balance and for any DeFi token balances.\nQuestion: How many currency pairs are there?", answer: "7" },
+      { question: "TzKT explorer have the Stats section. There you can explore many essential Tezos values displayed in graphs and charts, which allows to visualise the dynamics. Question: State the highest recorded Staking APY", answer: "10.62" },
+      { question: "TzKT allows you to review bakery software. You can assess how many bakers use each version of the software and find the links to the software update. Question: State the current software version", answer: "24.2" },
+      { question: "TzKT Bakers page provides a variety of tools to choose the baker to stake or delegate. You can see what services the baker offers and sort them according to your criteria.\nQuestion: Find the baker which has the most free staking space.", answer: "Everstake" },
+      { question: "TzKT has tools to explore your delegation and staking process. Every account has a rewards tab with detailed numbers and graphs. Every baker, in addition, has a schedule showing each block and attestation.\nQuestion: Find the rewards tab and state how many statistics points there are.", answer: "8" },
+      { question: "TzKT has a specific section where you can explore Tezos dApps and get detailed information, including numbers, graphs, social links and all contracts and tokens related to the project. Question: Find the Sirius dApp and find out the name of the token it is using.", answer: "SIRS" },
+    ];
+
+    let current = null;
+    let used = [];
+
+    function getRandom() {
+      const remaining = questions.filter((_, i) => !used.includes(i));
+      if (remaining.length === 0) {
+        used = [];
+        return questions[Math.floor(Math.random() * questions.length)];
+      }
+      const idx = questions.indexOf(remaining[Math.floor(Math.random() * remaining.length)]);
+      used.push(idx);
+      return questions[idx];
+    }
+
+    function startQuiz() {
+      used = [];
+      document.getElementById('start-btn').style.display = 'none';
+      showQuestion();
+    }
+
+    function showQuestion() {
+      current = getRandom();
+      document.getElementById('question-box').textContent = current.question;
+      const input = document.getElementById('answer-input');
+      input.style.display = 'block';
+      input.value = '';
+      input.focus();
+      document.getElementById('submit-btn').style.display = 'block';
+      document.getElementById('next-btn').style.display = 'none';
+      const fb = document.getElementById('feedback');
+      fb.style.display = 'none';
+      fb.className = '';
+    }
+
+    function checkAnswer() {
+      const input = document.getElementById('answer-input');
+      const userAnswer = input.value.trim().toLowerCase();
+      if (!userAnswer) return;
+
+      const correct = current.answer.toLowerCase();
+      const fb = document.getElementById('feedback');
+
+      if (userAnswer === correct) {
+        fb.textContent = '✓ Correct!';
+        fb.className = 'correct';
+      } else {
+        fb.textContent = `✗ Wrong. The answer is: ${current.answer}`;
+        fb.className = 'wrong';
+      }
+
+      fb.style.display = 'block';
+      document.getElementById('submit-btn').style.display = 'none';
+      document.getElementById('next-btn').style.display = 'block';
+      input.disabled = true;
+    }
+
+    function nextQuestion() {
+      document.getElementById('answer-input').disabled = false;
+      showQuestion();
+    }
+
+    // Allow pressing Enter to submit
+    document.getElementById('answer-input').addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') {
+        if (document.getElementById('submit-btn').style.display !== 'none') {
+          checkAnswer();
+        } else {
+          nextQuestion();
+        }
+      }
+    });
+  </script>
+</body>
+</html>
