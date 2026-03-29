@@ -176,7 +176,7 @@
     <div id="tip-box">
       <strong>💡 Hint</strong>
       <span id="tip-text"></span>
-      <img id="tip-qr" src="" alt="QR code" style="display:none; margin-top:10px; width:110px; height:110px; border-radius:6px;">
+      <img id="tip-qr" src="" alt="QR code" style="display:none; margin-top:10px; width:180px; height:180px; border-radius:6px; display:none; margin-left:auto; margin-right:auto;">
     </div>
   </div>
 
@@ -185,57 +185,68 @@
       {
         question: "TzKT explorer allows users to explore Tezos governance process. You can observe how many epochs have changed, every upgrade proposal created and current proposal voting status. Question: How many stages has Tezos governance procedure?",
         answer: "5",
-        tip: "Navigate to the Governance section on TzKT and look at the voting period cycle diagram."
+        tip: "Navigate to the Governance section on TzKT and look at the voting period cycle diagram.",
+        tipQR: "https://tzkt.io/governance/current/proposal"
       },
       {
         question: "TzKT explorer have the Stats section. There you can explore many essential Tezos values displayed in graphs and charts, which allows to visualise the dynamics. Question: State the highest recorded Staking APY",
         answer: "17.52",
-        tip: "Go to the Stats section and hover over the peak of the Staking APY graph to read the exact value."
+        tip: "Go to the Stats section and hover over the peak of the Staking APY graph to read the exact value.",
+        tipQR: "https://tzkt.io/stats/staking-apy?type=line&period=month"
       },
       {
         question: "TzKT allows you to review bakery software. You can assess how many bakers use each version of the software and find the links to the software update. Question: State the current software version",
         answer: ["24.2", "v24.2"],
-        tip: "Visit the Bakers section, find the Bakery Software tab, and look for the most recent version listed."
-      },
-      {
-        question: "TzKT Bakers page provides a variety of tools to choose the baker to stake or delegate. You can see what services the baker offers and sort them according to your criteria.\nQuestion: Find the baker which has the most free staking space.",
-        answer: "TenX Protocols",
-        tip: "On the Bakers page, use the column sort to order bakers by Free Staking Space (descending)."
+        tip: "Visit the Bakers section, find the Bakery Software tab, and look for the most recent version listed.",
+        tipQR: "https://tzkt.io/software"
       },
       {
         question: "TzKT has a specific section where you can explore Tezos dApps and get detailed information, including numbers, graphs, social links and all contracts and tokens related to the project. Question: Find the Sirius dApp and find out the symbol of the token it is using.",
         answer: "SIRS",
-        tip: "Go to the dApps section, search for Sirius, and check the token listed under its details."
+        tip: "Go to the dApps section, search for Sirius, and check the token listed under its details.",
+        tipQR: "https://tzkt.io/dapps/sirius"
       },
       {
         question: "Double baking event is designed to prevent the ecosystem from the baker mistakes or fraud, encouraging with a reward in case of accusing the issue.\nQuestion: What is the biggest reward for double baking accusation?",
         answer: "64003",
-        tip: "Search for double baking events on TzKT and sort by reward to find the highest accusation reward."
+        tip: "Search for double baking events on TzKT and sort by reward to find the highest accusation reward.",
+        tipQR: "https://tzkt.io/double_baking"
       },
       {
         question: "What city was the first Tezos protocol upgrade named after? Tip: It was the first protocol upgrade, which was adopted based on a community vote.",
         answer: "Athens",
-        tip: "Go to the Protocols section on TzKT and find the first community-voted upgrade."
+        tip: "Go to the Protocols section on TzKT and find the first community-voted upgrade.",
+        tipQR: "https://tzkt.io/protocols"
       },
       {
         question: "Now one Tezos block is generated every 6 seconds.\nQuestion: How many seconds did it take initially? Tip: The first protocol is Alpha I",
         answer: "60",
-        tip: "Navigate to the Protocols section on TzKT and open Alpha I to check its block time parameter."
+        tip: "Navigate to the Protocols section on TzKT and open Alpha I to check its block time parameter.",
+        tipQR: "https://tzkt.io/protocols"
       },
       {
-        question: "The TzKT API serves 2 billion requests per month.\nQuestion: How many requests per day can be provided for free?",
+        question: "The TzKT API serves 2 billion requests per month.\nQuestion: How many requests a single user can provide per day under the free plan?",
         answer: "500000",
-        tip: "Check the TzKT API pricing or documentation page for the free tier limits."
+        tip: "Check the TzKT API pricing or documentation page for the free tier limits.",
+        tipQR: "https://tzkt.io/api"
       },
       {
         question: "Question: When was Etherlink originated? Enter dd-mm-yyyy",
         answer: "29-04-2024",
-        tip: "Open Blockchain → Smart Rollup Operations → Originate."
+        tip: "Open Blockchain → Smart Rollup Operations → Originate.",
+        tipQR: "https://tzkt.io/smart_rollup_originate"
       },
       {
         question: "Question: What is the biggest amount not yet activated from ICO?",
         answer: "2500000",
-        tip: "Open Commitments in the Blockchain tab and switch to 'Pending'."
+        tip: "Open Commitments in the Blockchain tab and switch to 'Pending'.",
+        tipQR: "https://tzkt.io/commitments?pending=true"
+      },
+      {
+        question: "Question: Find out the \"biggest\" domain owned by the owner of sugardaddy.tez.",
+        answer: "bigisland.tez",
+        tip: "Look up the owner of sugardaddy.tez on TzKT and browse their token balances filtered by 'big'.",
+        tipQR: "https://tzkt.io/tz1SDextwQzz7AAL8EkRZoFhFqqrVh2mfjUD/balances/?s=big"
       },
       {
         question: "Question: State the date of the genesis block in Tezos. Enter dd-mm-yyyy",
@@ -312,7 +323,7 @@
           document.getElementById('tip-text').textContent = current.tip;
           const qrImg = document.getElementById('tip-qr');
           if (current.tipQR) {
-            qrImg.src = `https://api.qrserver.com/v1/create-qr-code/?size=110x110&data=${encodeURIComponent(current.tipQR)}`;
+            qrImg.src = `https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${encodeURIComponent(current.tipQR)}`;
             qrImg.style.display = 'block';
           } else {
             qrImg.style.display = 'none';
